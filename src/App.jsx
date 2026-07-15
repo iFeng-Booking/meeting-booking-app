@@ -9,8 +9,21 @@ const SLATE = "#5B6B82";
 const LINE = "#E3E8EF";
 const BRAND = "#2452C8";
 
+// change this to your own secret word — add ?admin=YOUR_WORD to the URL to unlock
+// the full view (admin backend + mobile/kiosk demo tabs)
+const ADMIN_SECRET = "ifeng2026";
+
 export default function App() {
   const [tab, setTab] = useState("pc");
+  const isAdmin = new URLSearchParams(window.location.search).get("admin") === ADMIN_SECRET;
+
+  if (!isAdmin) {
+    return (
+      <div style={{ fontFamily: "-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" }}>
+        <PCApp publicMode />
+      </div>
+    );
+  }
 
   return (
     <div style={{ fontFamily: "-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" }}>

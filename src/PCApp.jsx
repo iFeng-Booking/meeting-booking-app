@@ -669,7 +669,7 @@ function SpaceManager({ spaces, setSpaces, notify }) {
 }
 
 /* --------------------------------- root ---------------------------------- */
-export default function PCApp() {
+export default function PCApp({ publicMode = false }) {
   const [spaces, setSpaces] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [role, setRole] = useState("booking"); // booking | admin
@@ -719,20 +719,22 @@ export default function PCApp() {
             : <span style={{ fontSize: 11.5, color: "#0E8A5F", display: "flex", alignItems: "center", gap: 4, marginLeft: 6 }}><Check size={11} /> 已连接数据库</span>}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ display: "flex", background: CANVAS, borderRadius: 999, padding: 3 }}>
-            <button onClick={() => setRole("booking")} style={{
-              padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
-              background: role === "booking" ? "#fff" : "transparent", color: role === "booking" ? BRAND : SLATE,
-              boxShadow: role === "booking" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
-              display: "flex", alignItems: "center", gap: 6,
-            }}><ClipboardList size={14} /> 预约端</button>
-            <button onClick={() => setRole("admin")} style={{
-              padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
-              background: role === "admin" ? "#fff" : "transparent", color: role === "admin" ? BRAND : SLATE,
-              boxShadow: role === "admin" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
-              display: "flex", alignItems: "center", gap: 6,
-            }}><Settings size={14} /> 管理后台</button>
-          </div>
+          {!publicMode && (
+            <div style={{ display: "flex", background: CANVAS, borderRadius: 999, padding: 3 }}>
+              <button onClick={() => setRole("booking")} style={{
+                padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
+                background: role === "booking" ? "#fff" : "transparent", color: role === "booking" ? BRAND : SLATE,
+                boxShadow: role === "booking" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+                display: "flex", alignItems: "center", gap: 6,
+              }}><ClipboardList size={14} /> 预约端</button>
+              <button onClick={() => setRole("admin")} style={{
+                padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
+                background: role === "admin" ? "#fff" : "transparent", color: role === "admin" ? BRAND : SLATE,
+                boxShadow: role === "admin" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+                display: "flex", alignItems: "center", gap: 6,
+              }}><Settings size={14} /> 管理后台</button>
+            </div>
+          )}
           <div style={{ fontSize: 13, color: SLATE }}>{CURRENT_USER.name} · {CURRENT_USER.dept}</div>
           <button onClick={loadAll} style={{ display: "flex", alignItems: "center", gap: 5, border: `1px solid ${LINE}`, background: "#fff", color: SLATE, padding: "6px 11px", borderRadius: 7, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
             刷新数据
@@ -741,7 +743,7 @@ export default function PCApp() {
       </div>
 
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "24px 20px 60px" }}>
-        {role === "booking"
+        {(publicMode ? "booking" : role) === "booking"
           ? <BookingApp spaces={spaces} bookings={bookings} setBookings={setBookings} notify={notify} />
           : <AdminApp spaces={spaces} setSpaces={setSpaces} bookings={bookings} setBookings={setBookings} notify={notify} />}
       </div>
