@@ -15,7 +15,17 @@ const ADMIN_SECRET = "ifeng2026";
 
 export default function App() {
   const [tab, setTab] = useState("pc");
-  const isAdmin = new URLSearchParams(window.location.search).get("admin") === ADMIN_SECRET;
+  const params = new URLSearchParams(window.location.search);
+  const isAdmin = params.get("admin") === ADMIN_SECRET;
+  const view = params.get("view"); // "kiosk" -> dedicated door-display link, no nav bar
+
+  if (view === "kiosk") {
+    return (
+      <div style={{ fontFamily: "-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" }}>
+        <KioskApp />
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return (
