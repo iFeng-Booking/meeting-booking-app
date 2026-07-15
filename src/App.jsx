@@ -22,7 +22,7 @@ export default function App() {
   if (view === "kiosk") {
     return (
       <div style={{ fontFamily: "-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" }}>
-        <KioskApp />
+        <KioskApp fixedSpaceId={params.get("space")} />
       </div>
     );
   }

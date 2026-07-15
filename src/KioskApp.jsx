@@ -115,7 +115,7 @@ function TempBookingModal({ space, simTime, onCancel, onSubmit }) {
 }
 
 /* --------------------------------- root ----------------------------------- */
-export default function KioskApp() {
+export default function KioskApp({ fixedSpaceId = null }) {
   const [spaces, setSpaces] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [spaceId, setSpaceId] = useState(null);
@@ -135,14 +135,15 @@ export default function KioskApp() {
         const [s, b] = await Promise.all([fetchSpaces(), fetchBookings()]);
         setSpaces(s);
         setBookings(b);
-        if (s.length) setSpaceId(s[0].id);
+        const target = (fixedSpaceId && s.find(x => x.id === fixedSpaceId)) ? fixedSpaceId : (s[0] && s[0].id);
+        if (target) setSpaceId(target);
       } catch (e) {
         setLoadError("加载失败，请检查网络");
       } finally {
         setLoaded(true);
       }
     })();
-  }, []);
+  }, [fixedSpaceId]);
 
   function notify(msg) { setToast(msg); setTimeout(() => setToast(""), 2400); }
 
@@ -198,17 +199,8 @@ export default function KioskApp() {
         @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
       `}</style>
 
-      {/* device selector — demo aid only, a real installation is one screen per door */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-        {spaces.map(s => (
-          <button key={s.id} onClick={() => setSpaceId(s.id)} style={{
-            padding: "6px 14px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-            border: `1px solid ${spaceId === s.id ? "#3B82F6" : LINE}`,
-            background: spaceId === s.id ? "rgba(59,130,246,0.15)" : "transparent",
-            color: spaceId === s.id ? "#93C5FD" : SUB,
-          }}>{s.name}</button>
-        ))}
-      </div>
+      {/* no room selector — this screen is meant to be pinned to one door via
+          the URL, e.g. ?view=kiosk&space=s1 (falls back to the first space) */}
 
       {/* the physical panel */}
       <div style={{
